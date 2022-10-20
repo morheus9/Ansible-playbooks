@@ -14,5 +14,3 @@
       become: yes
       shell: sh $HOME/kubernetes_join_command
       register: joined_or_not
-
-    

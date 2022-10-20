@@ -7,10 +7,60 @@
   connection: ssh
 
   tasks:
-    - name: Create containerd config file
-      file:
-        path: "/etc/modules-load.d/containerd.conf"
-        state: "touch"
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400 #One day
+
+    - name: Add nodes to host_file
+      blockinfile:
+        dest: /etc/hosts
+        block: |
+          "{{ nodes[0] }}"
+          "{{ nodes[1] }}"
+          "{{ nodes[2] }}"
+
+    - name: Disable swap
+      shell: |
+        sudo swapoff -a
+        sudo sed -i '/swap/s/^/#\ /' /etc/fstab
+
+    - name: Install containerd
+      shell: |
+        wget https://github.com/containerd/containerd/releases/download/v1.6.8/containerd-1.6.8-linux-amd64.tar.gz
+        tar Cxzvf /usr/local containerd-1.6.8-linux-amd64.tar.gz
+      args:
+        chdir: /tmp/
+
+    - name: Install containerd service
+      shell: |
+        wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
+        cp containerd.service /etc/systemd/system $$$$$$$!@$!#$!#$!$!#$!#$!@#!@$
+      args:
+        chdir: /tmp/
+   
+    - name: Copies containerd.service
+      copy:
+        src: /tmp/containerd.service 
+        dest: /etc/systemd/system
+        remote_src: yes
+        owner: kube
+
+    - name: Install Runc
+      shell: |
+        wget https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64
+        install -m 755 runc.amd64 /usr/local/sbin/runc
+      args:
+        chdir: /tmp/
+
+    - name: Install cni plugins
+      shell: |
+        wget https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz
+        mkdir -p /opt/cni/bin
+        tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.1.1.tgz
+      args:
+        chdir: /tmp/
 
     - name: Add conf for containerd
       blockinfile:
@@ -19,17 +69,12 @@
           overlay
           br_netfilter
 
-    - name: modprobe
+    - name: Modprobe
       shell: |
         sudo modprobe overlay
         sudo modprobe br_netfilter
 
-    - name: Set system configurations for Kubernetes networking
-      file:
-        path: "/etc/sysctl.d/99-kubernetes-cri.conf"
-        state: "touch"
-
-    - name: Add conf for containerd
+    - name: Add conf for cri
       blockinfile:
         path: "/etc/sysctl.d/99-kubernetes-cri.conf"
         block: |
@@ -40,28 +85,30 @@
     - name: Apply new settings
       command: sudo sysctl --system
 
-    - name: install containerd
-      shell: |
-        sudo apt-get update && sudo apt-get install -y containerd
-        sudo mkdir -p /etc/containerd
-        sudo containerd config default | sudo tee /etc/containerd/config.toml
-        sudo systemctl restart containerd
-        sudo systemctl enable containerd.service
-
-    - name: disable swap
-      shell: |
-        sudo swapoff -a
-        sudo sed -i '/swap/s/^/#\ /' /etc/fstab
-
-    - name: install and configure dependencies
-      shell: |
-        sudo apt-get update && sudo apt-get install -y apt-transport-https curl
-        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-
-    - name: Create kubernetes repo file
+    - name: Create containerd config file
       file:
-        path: "/etc/apt/sources.list.d/kubernetes.list"
+        path: "/etc/containerd/config.toml"
         state: "touch"
+
+    - name: Config containerd
+      shell: |
+        containerd config default>/etc/containerd/config.toml
+        sudo sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config.toml
+
+    - name: Restart and enable containerd
+      shell: |
+        systemctl daemon-reload
+        systemctl restart containerd
+        systemctl enable --now containerd
+
+    - name: Install dependencies
+      apt: name={{ item }} update_cache=yes state=latest
+      loop:
+        - "curl"
+        - "wget"
+        - "apt-transport-https"
+
+#   curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 
     - name: Add K8s Source
       blockinfile:
@@ -69,8 +116,23 @@
         block: |
           deb https://apt.kubernetes.io/ kubernetes-xenial main
 
-    - name: install kubernetes
+
+    - name: Install dependencies
+      apt: name={{ item }} update_cache=yes state=latest
+      loop:
+        - "kubelet"
+        - "kubeadm"
+        - "kubectl"
+      
+#    sudo apt-mark hold kubelet kubeadm kubectl
+
+    - name: Enable kubelet
       shell: |
-        sudo apt-get update
-        sudo apt-get install -y kubelet kubeadm kubectl
-        sudo apt-mark hold kubelet kubeadm kubectl
+        systemctl enable --now kubelet
+
+
+
+
+
+
+

@@ -23,29 +23,24 @@
         remote_src: yes
         owner: kube
 
-    - name: Fix Pod network
-      become: yes
-      become_user: kube
-      shell: |
-             unset KUBECONFIG
-             export KUBECONFIG=/etc/kubernetes/admin.conf
-      args:
-        chdir: $HOME
 
-    - name: Install Pod network
-      become: yes
-      become_user: kube
-      shell: |
-             systemctl stop kubelet
-             systemctl start kubelet
-             kubectl apply -f https://projectcalico.docs.tigera.io/manifests/calico.yaml
-      args:
-        chdir: $HOME
+
+
+
+
+
+
+
+
+
+
+
+
 
     - name: Get the token for joining the worker nodes
       become: yes
       become_user: kube
-      shell: kubeadm token create  --print-join-command
+      shell: kubeadm token create --print-join-command
       register: kubernetes_join_command
 
     - name: Print debug 
