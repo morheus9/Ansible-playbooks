@@ -3,7 +3,7 @@
   gather_facts: yes
 
   tasks:
-    - name: Copy join command from Ansiblehost to the worker nodes.
+    - name: Copy join command from Ansible host to the worker nodes.
       become: yes
       copy:
         src: /tmp/kubernetes_join_command

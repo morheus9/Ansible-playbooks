@@ -1,19 +1,18 @@
 - hosts: "masters, workers"
-  remote_user: ubuntu
+  remote_user: pi
   become: yes
   become_method: sudo
   become_user: root
   gather_facts: yes
-  connection: ssh
-
+ 
   tasks:
-    - name: Update and upgrade apt packages
+    - name: Update and upgrade apt packages.
       apt:
         upgrade: yes
         update_cache: yes
-        cache_valid_time: 86400 #One day
+        cache_valid_time: 86400 # One day
 
-    - name: Add nodes to host_file
+    - name: Add nodes to host_file.
       blockinfile:
         dest: /etc/hosts
         block: |
@@ -21,60 +20,52 @@
           "{{ nodes[1] }}"
           "{{ nodes[2] }}"
 
-    - name: Disable swap
-      shell: |
-        sudo swapoff -a
-        sudo sed -i '/swap/s/^/#\ /' /etc/fstab
+    - name: Remove Swap entry from /etc/fstab.
+      lineinfile:
+        dest: /etc/fstab
+        regexp: swap
+        state: absent
 
-    - name: Install containerd
-      shell: |
-        wget https://github.com/containerd/containerd/releases/download/v1.6.8/containerd-1.6.8-linux-amd64.tar.gz
-        tar Cxzvf /usr/local containerd-1.6.8-linux-amd64.tar.gz
-      args:
-        chdir: /tmp/
-
-    - name: Install containerd service
-      shell: |
-        wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
-        cp containerd.service /etc/systemd/system $$$$$$$!@$!#$!#$!$!#$!#$!@#!@$
-      args:
-        chdir: /tmp/
-   
-    - name: Copies containerd.service
-      copy:
-        src: /tmp/containerd.service 
-        dest: /etc/systemd/system
+    - name: Install containerd.
+      unarchive:
+        src: https://github.com/containerd/containerd/releases/download/v1.6.8/containerd-1.6.8-linux-amd64.tar.gz
+        dest: /usr/local/
         remote_src: yes
-        owner: kube
 
-    - name: Install Runc
-      shell: |
-        wget https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64
-        install -m 755 runc.amd64 /usr/local/sbin/runc
+    - name: Install containerd.service.
+      url: https://raw.githubusercontent.com/containerd/containerd/main/containerd.service 
+        dest: /etc/systemd/system 
+        owner: "{{ ansible_user }}"
+
+    - name: Download Runc.
+      url: wget https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64
+        dest: /tmp/
+
+    - name: Install Runc.
+      shell: install -m 755 runc.amd64 /usr/local/sbin/runc
       args:
         chdir: /tmp/
 
-    - name: Install cni plugins
-      shell: |
-        wget https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz
-        mkdir -p /opt/cni/bin
-        tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.1.1.tgz
-      args:
-        chdir: /tmp/
-
-    - name: Add conf for containerd
+    - name: Install cni plugins.
+      unarchive:
+        src: https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz
+        dest: /opt/cni/bin/
+        creates: /opt/cni/bin/
+        remote_src: yes
+   
+    - name: Add conf for containerd.
       blockinfile:
         path: "/etc/modules-load.d/containerd.conf"
         block: |
           overlay
           br_netfilter
 
-    - name: Modprobe
+    - name: Modprobe.
       shell: |
         sudo modprobe overlay
         sudo modprobe br_netfilter
 
-    - name: Add conf for cri
+    - name: Add conf for cri.
       blockinfile:
         path: "/etc/sysctl.d/99-kubernetes-cri.conf"
         block: |
@@ -82,57 +73,73 @@
           net.ipv4.ip_forward = 1
           net.bridge.bridge-nf-call-ip6tables = 1
 
-    - name: Apply new settings
-      command: sudo sysctl --system
+    - name: Apply new settings.
+      shell: |
+        sudo sysctl --system
 
-    - name: Create containerd config file
+    - name: Create containerd config file.
       file:
         path: "/etc/containerd/config.toml"
         state: "touch"
 
-    - name: Config containerd
+    - name: Config containerd.
       shell: |
         containerd config default>/etc/containerd/config.toml
         sudo sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config.toml
 
-    - name: Restart and enable containerd
+    - name: Restart and enable containerd.
       shell: |
         systemctl daemon-reload
         systemctl restart containerd
         systemctl enable --now containerd
 
-    - name: Install dependencies
-      apt: name={{ item }} update_cache=yes state=latest
-      loop:
-        - "curl"
-        - "wget"
-        - "apt-transport-https"
+    - name: Install dependencies.
+      apt: 
+        update_cache: yes
+        state: latest
+        pkg:
+        - curl
+        - wget
+        - apt-transport-https
+      state: present
 
-#   curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+    - name: Add an Apt signing key for kubelet, kubeadm, kubectl.
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
 
-    - name: Add K8s Source
+    - name: Add K8s Source.
       blockinfile:
         path: "/etc/apt/sources.list.d/kubernetes.list"
         block: |
           deb https://apt.kubernetes.io/ kubernetes-xenial main
 
+    - name: Install kubelet, kubeadm, kubectl.
+      apt: 
+        update_cache: yes
+        state: latest
+        name:
+        - kubelet
+        - kubeadm
+        - kubectl
+      state: present
+     
+    - name: Hold kubelet, kubeadm, kubectl.
+      dpkg_selections:
+        selection: hold
+        name:
+        - kubelet
+        - kubeadm
+        - kubectl
 
-    - name: Install dependencies
-      apt: name={{ item }} update_cache=yes state=latest
-      loop:
-        - "kubelet"
-        - "kubeadm"
-        - "kubectl"
-      
-#    sudo apt-mark hold kubelet kubeadm kubectl
+    - name: Enable kubelet.
+      systemd:
+        name: kubelet
+        enabled: yes
 
-    - name: Enable kubelet
-      shell: |
-        systemctl enable --now kubelet
-
-
-
-
-
-
-
+    - name: Reboot all the kubernetes nodes.
+      reboot:
+        post_reboot_delay: 10
+        reboot_timeout: 40
+        connect_timeout: 60
+        test_command: uptime
