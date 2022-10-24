@@ -12,7 +12,7 @@
       become_user: {{ ansible_user }}
       shell: |
         kubeadm init
-        --pod-network-cidr=10.244.0.0/16 \
+        --pod-network-cidr={{ cidr }} \
         --cri-socket /run/containerd/containerd.sock \
         --upload-certs \
         --control-plane-endpoint=k8smaster.example.net \

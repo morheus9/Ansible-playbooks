@@ -1,27 +1,74 @@
 ---
+- hosts: masters
+  become: yes
+  
+  tasks:
+    - name: Pull the images that kubeadm requires.
+      become: yes
+      become_user: {{ ansible_user }}
+      shell: kubeadm config images pull --cri-socket /run/containerd/containerd.sock
 
+    - name: Initialize the cluster
+      become: yes
+      become_user: {{ ansible_user }}
+      shell: |
+        kubeadm init
+        --pod-network-cidr={{ cidr }} \
+        --cri-socket /run/containerd/containerd.sock \
+        --upload-certs \
+        --control-plane-endpoint=k8smaster.example.net \
+        --skip-phases=addon/kube-proxy
+      args:
+        chdir: $HOME
+        creates: cluster_initialized.txt
 
-#   - block: #============BLOCK FOR REDHAT============
-#       - name: Install Apache for RedHat
-#         yum: name=httpd update_cache=yes state=latest
+    - name: Create .kube directory
+      become: yes
+      become_user: {{ ansible_user }}
+      become_method: sudo
+      file:
+        path: /home/{{ ansible_user }}/.kube
+        state: directory
+        owner: {{ ansible_user }}
+        group: {{ ansible_user }}
+        mode: 0755
 
-#       - name: Copy MyHomePage to servers
-#         copy: src={{source_file}} dest={{destination_file}} mode=0777
-#         notify: Restart Apache RedHat
+    - name: Copies admin.conf to user's kube config
+      become: yes
+      become_user: root
+      become_method: sudo
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/{{ ansible_user }}/.kube/config
+        remote_src: yes
+        owner: {{ ansible_user }}
+        group: {{ ansible_user }}
+        mode: '0644'
 
-#       - name: Starting Apache on the every boot for RedHat
-#         service: name=httpd state=started enabled=yes
+    - name: Remove the cache directory.
+      become_user: {{ ansible_user }}
+      become_method: sudo
+      become: yes
+      file: 
+        path: /home/{{ ansible_user }}/.kube/cache
+        state: absent
 
-#     when: ansible_os_family == "RedHat"
+    - name: Get the token for joining the worker nodes
+      become: yes
+      become_user: {{ ansible_user }}
+      shell: kubeadm token create --print-join-command
+      register: kubernetes_join_command
 
-#   - block: #============BLOCK FOR DEBIAN============
-#       - name: Install Apache for Debian
-#         apt: name=apache2 update_cache=yes state=latest
+    - name: Print debug 
+      debug:
+        msg: "{{ kubernetes_join_command.stdout }}"
 
-#       - name: Copy MyHomePage to servers
-#         copy: src={{source_file}} dest={{destination_file}} mode=0777
-#         notify: Restart Apache Debian
+    - name: Copy join command to local file.
+      become: yes
+      local_action: copy content="{{ kubernetes_join_command.stdout_lines[0] }}" dest="/tmp/kubernetes_join_command" mode=0777
 
-#       - name: Starting Apache on the every boot for Debian
-#         service: name=apache2 state=started enabled=yes
-#     when: ansible_os_family == "Debian"
+    - name: Configure kubectl command auto-completion.
+      lineinfile:
+        dest: /home/{{ ansible_user }}/.bashrc
+        line: 'source <(kubectl completion bash)'
+        insertafter: EOF

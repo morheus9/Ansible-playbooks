@@ -1,27 +1,18 @@
 ---
+- hosts: 'workers, masters'
+  become: yes
 
+  tasks:
+    - name: Create the kube user account
+      user: name=kube group=kube state=present createhome=yes shell=/bin/bash groups=sudo append=yes
 
-#   - block: #============BLOCK FOR REDHAT============
-#       - name: Install Apache for RedHat
-#         yum: name=httpd update_cache=yes state=latest
+    - name: Allow 'kube' to use sudo without needing a password
+      lineinfile:
+        dest: /etc/sudoers
+        line: 'kube ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
 
-#       - name: Copy MyHomePage to servers
-#         copy: src={{source_file}} dest={{destination_file}} mode=0777
-#         notify: Restart Apache RedHat
-
-#       - name: Starting Apache on the every boot for RedHat
-#         service: name=httpd state=started enabled=yes
-
-#     when: ansible_os_family == "RedHat"
-
-#   - block: #============BLOCK FOR DEBIAN============
-#       - name: Install Apache for Debian
-#         apt: name=apache2 update_cache=yes state=latest
-
-#       - name: Copy MyHomePage to servers
-#         copy: src={{source_file}} dest={{destination_file}} mode=0777
-#         notify: Restart Apache Debian
-
-#       - name: Starting Apache on the every boot for Debian
-#         service: name=apache2 state=started enabled=yes
-#     when: ansible_os_family == "Debian"
+    - name: Set up authorized keys for the kube user
+      authorized_key: user=kube key="{{item}}"
+      with_file:
+        - ~/.ssh/id_rsa.pub
