@@ -1,0 +1,8 @@
+---
+- name: Install k8s
+  hosts: all
+  become: yes
+
+  roles:
+  #  - { role: install-k8s, when: ansible_system == 'Linux' }
+    - { role: install-k8s, when: ansible_system == 'Linux' }
