@@ -1,9 +1,0 @@
----
-# handlers file for deploy
-
-#  handlers:
-#- name: Restart Apache RedHat
-#  service: name=httpd state=restart
-#
-#- name: Restart Apache Debian
-#  service: name=apache2 state=restarted

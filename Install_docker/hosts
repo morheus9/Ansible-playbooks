@@ -1,0 +1,5 @@
+[masters]
+master ansible_host=192.168.110.178 ansible_user=pi ansible_ssh_private_key_file=/root/.ssh/id_rsa
+
+[workers]
+worker1 ansible_host=192.168.100.179 ansible_user=pi ansible_ssh_private_key_file=/root/.ssh/id_rsa

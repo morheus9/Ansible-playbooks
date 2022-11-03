@@ -1,0 +1,151 @@
+- name: Update and upgrade apt packages.
+  ansible.builtin.apt:
+    upgrade: true
+    update_cache: true
+    cache_valid_time: 86400 # One day
+
+- name: Add nodes to host_file.
+  ansible.builtin.blockinfile:
+    dest: /etc/hosts
+    block: |
+      "{{ nodes[0] }}"
+      "{{ nodes[1] }}"
+      "{{ nodes[2] }}"
+
+- name: Remove Swap entry from /etc/fstab.
+  ansible.builtin.lineinfile:
+    dest: /etc/fstab
+    regexp: swap
+    state: absent
+
+- name: Install containerd.
+  ansible.builtin.unarchive:
+    src: https://github.com/containerd/containerd/releases/download/v1.6.8/containerd-1.6.8-linux-amd64.tar.gz
+    dest: /usr/local/
+    remote_src: true
+
+- name: Install containerd.service.
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
+    dest: /etc/systemd/system
+    mode: 0644
+
+- name: Download Runc.
+  ansible.builtin.get_url:
+    url: https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64
+    dest: /tmp/
+    mode: 0644
+
+- name: Install Runc.
+  ansible.builtin.command: install -m 755 runc.amd64 /usr/local/sbin/runc
+  args:
+    chdir: /tmp/
+  changed_when: false
+
+- name: Install cni plugins.
+  ansible.builtin.unarchive:
+    src: https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz
+    dest: /opt/cni/bin/
+    creates: /opt/cni/bin/
+    remote_src: true
+
+- name: Add conf for containerd.
+  ansible.builtin.blockinfile:
+    path: /etc/modules-load.d/containerd.conf
+    block: |
+      overlay
+      br_netfilter
+
+- name: Modprobe.
+  ansible.builtin.shell: |
+    sudo modprobe overlay
+    sudo modprobe br_netfilter
+  changed_when: false
+
+- name: Create a empty file for kubernetes sysctl params.
+  ansible.builtin.copy:
+    content: ""
+    dest: /etc/sysctl.d/99-kubernetes-cri.conf
+    force: false
+    mode: 0644
+
+- name: Add conf for cri.
+  ansible.builtin.lineinfile:
+    path: /etc/sysctl.d/99-kubernetes-cri.conf
+    line: "{{ item }}"
+  with_items:
+    - "net.bridge.bridge-nf-call-iptables  = 1"
+    - "net.ipv4.ip_forward                 = 1"
+    - "net.bridge.bridge-nf-call-ip6tables = 1"
+
+- name: Apply sysctl params without reboot.
+  ansible.builtin.command: sysctl --system
+  changed_when: false
+
+- name: Create containerd config file.
+  ansible.builtin.file:
+    path: "/etc/containerd/config.toml"
+    state: "touch"
+    mode: 0644
+
+- name: Config containerd.
+  ansible.builtin.shell: |
+    containerd config default>/etc/containerd/config.toml
+    sudo sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config.toml
+  changed_when: false
+
+- name: Restart and enable containerd.
+  ansible.builtin.systemd:
+    daemon_reload: true
+    restarted: true
+    enabled: true
+    name: containerd
+
+- name: Install dependencies.
+  ansible.builtin.apt:
+    update_cache: true
+    pkg:
+      - curl
+      - wget
+      - apt-transport-https
+    state: present
+
+- name: Add an Apt signing key for kubelet, kubeadm, kubectl.
+  ansible.builtin.apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Add K8s Source.
+  ansible.builtin.blockinfile:
+    path: "/etc/apt/sources.list.d/kubernetes.list"
+    block: |
+      deb https://apt.kubernetes.io/ kubernetes-xenial main
+
+- name: Install kubelet, kubeadm, kubectl.
+  ansible.builtin.apt:
+    update_cache: true
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+    state: present
+
+- name: Hold kubelet, kubeadm, kubectl.
+  ansible.builtin.dpkg_selections:
+    selection: hold
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+
+- name: Enable kubelet.
+  ansible.builtin.systemd:
+    name: kubelet
+    enabled: true
+
+- name: Reboot all the kubernetes nodes.
+  ansible.builtin.reboot:
+    post_reboot_delay: 10
+    reboot_timeout: 40
+    connect_timeout: 60
+    test_command: uptime
