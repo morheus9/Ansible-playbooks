@@ -1,9 +1,6 @@
 ---
 - name: Setup_master.
   hosts: masters
-  remote_user: pi
   become: true
-  become_method: sudo
-  become_user: root
   roles:
-    - configure_master
+    - { role: configure_master, when: ansible_system == 'Linux' }

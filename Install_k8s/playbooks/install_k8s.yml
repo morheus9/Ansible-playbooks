@@ -1,10 +1,7 @@
 ---
 - name: Install_k8s.
   hosts: workers, masters
-  remote_user: pi
   become: true
-  become_method: sudo
-  become_user: root
   gather_facts: true
   roles:
-    - install_k8s
+    - { role: install_k8s, when: ansible_system == 'Linux' }

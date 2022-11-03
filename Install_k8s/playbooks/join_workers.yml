@@ -4,4 +4,4 @@
   become: true
   gather_facts: true
   roles:
-    - join_workers
+    - { role: join_workers, when: ansible_system == 'Linux' }
