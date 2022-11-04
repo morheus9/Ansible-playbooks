@@ -1,9 +1,24 @@
 ---
-# handlers file for deploy
+- name: Apply sysctl params systemctl
+  ansible.builtin.command: sysctl --system
+  changed_when: false
 
-#  handlers:
-# - name: Restart Apache RedHat
-#  service: name=httpd state=restart
-#
-# - name: Restart Apache Debian
-#  service: name=apache2 state=restarted
+- name: Restart and enable containerd
+  ansible.builtin.systemd:
+    daemon_reload: true
+    restarted: true
+    enabled: true
+    name: containerd
+
+- name: Hold kubelet, kubeadm, kubectl
+  ansible.builtin.dpkg_selections:
+    selection: hold
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+
+- name: Enable kubelet
+  ansible.builtin.systemd:
+    name: kubelet
+    enabled: true

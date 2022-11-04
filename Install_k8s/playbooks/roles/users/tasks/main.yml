@@ -1,4 +1,4 @@
-- name: Create the kube user account.
+- name: Create the kube user account
   ansible.builtin.user:
     name: kube
     group: kube
@@ -14,7 +14,7 @@
     line: 'kube ALL=(ALL) NOPASSWD: ALL'
     validate: 'visudo -cf %s'
 
-- name: Set up authorized keys for the kube user.
+- name: Set up authorized keys for the kube user
   ansible.posix.authorized_key:
     user: kube
     key: "{{ item }}"

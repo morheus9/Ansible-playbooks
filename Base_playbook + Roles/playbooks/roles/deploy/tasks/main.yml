@@ -1,12 +1,12 @@
----
-# tasks file for deploy
-
-- name: Install my packages
-  apt: name={{ item }} update_cache=yes state=latest
-  loop:
-    - "tree"
-    -  "aazazwawqcqwc"
-
+- name: Install my packages.
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    update_cache: true
+    state: present
+    loop:
+      - "tree"
+      - "aazazwawqcqwc"
 #   - name: Check linux versions
 #     debug: var=ansible_os_family
 

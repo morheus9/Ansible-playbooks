@@ -1,3 +1,7 @@
 ---
-# defaults file for deploy
-# destin_folder: /var/www/html
+# vars file for deploy
+
+nodes:
+  - "192.168.1.110 k8smaster.example.net k8smaster"
+  - "192.168.1.111 k8sworker1.example.net k8sworker1"
+  - "192.168.1.112 k8sworker2.example.net k8sworker2"

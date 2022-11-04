@@ -1,7 +1,6 @@
 ---
 - name: Test Connection to my servers
   hosts: all
-
   tasks:
     - name: Ping my servers
       ansible.builtin.ping:

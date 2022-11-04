@@ -1,23 +1,10 @@
 ---
 - name: Install Apache
   hosts: all
-  become: yes
+  become: true
 
-  roles: 
+  roles:
   - { role: deploy, when: ansible_system == 'Linux' }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ##  tasks:
@@ -26,8 +13,6 @@
 ##      loop:
 ##        - "tree"
 ##        - "python"
-
-
 
 #  vars:
 #    source_file: ./MyWebSite/index.html
