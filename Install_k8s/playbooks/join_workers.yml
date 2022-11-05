@@ -1,5 +1,5 @@
 ---
-- name: Join_workers.
+- name: Join_workers
   hosts: workers
   become: true
   gather_facts: true

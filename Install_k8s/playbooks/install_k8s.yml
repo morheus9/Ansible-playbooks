@@ -1,5 +1,5 @@
 ---
-- name: Install_k8s.
+- name: Install_k8s
   hosts: workers, masters
   become: true
   gather_facts: true

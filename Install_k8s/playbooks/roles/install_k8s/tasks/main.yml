@@ -18,33 +18,72 @@
     regexp: swap
     state: absent
 
-- name: Install containerd
-  ansible.builtin.unarchive:
-    src: https://github.com/containerd/containerd/releases/download/v1.6.8/containerd-1.6.8-linux-amd64.tar.gz
-    dest: /usr/local/
-    remote_src: true
+# - name: Install containerd
+#  ansible.builtin.unarchive:
+#    src: https://github.com/containerd/containerd/releases/download/v1.6.9/containerd-1.6.9-linux-amd64.tar.gz
+#    dest: /usr/local/
+#    remote_src: true
 
-- name: Install containerd.service
-  ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
-    dest: /etc/systemd/system
-    mode: 0644
+# - name: Install containerd.service
+#  ansible.builtin.get_url:
+#    url: https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
+#    dest: /etc/systemd/system
+#    mode: 0644
 
-- name: Download Runc
-  ansible.builtin.get_url:
-    url: https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64
-    dest: /tmp/
-    mode: 0644
+# - name: Download Runc
+#  ansible.builtin.get_url:
+#    url: https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64
+#    dest: /tmp/
+#    mode: 0644
 
-- name: Install Runc
-  ansible.builtin.command: install -m 755 runc.amd64 /usr/local/sbin/runc
-  args:
-    chdir: /tmp/
-  changed_when: false
+# - name: Install Runc
+#  ansible.builtin.command: install -m 755 runc.amd64 /usr/local/sbin/runc
+#  args:
+#    chdir: /tmp/
+#  changed_when: false
+
+- name: Install dependencies
+  ansible.builtin.apt:
+    update_cache: true
+    pkg:
+      - ca-certificates
+      - curl
+      - lsb-release
+    state: present
+
+- name: Ensure additional dependencies are installed (on Ubuntu < 20.04 and any other systems)
+  ansible.builtin.apt:
+    name: gnupg2
+    state: present
+  when: ansible_distribution != 'Ubuntu' or ansible_distribution_version is version('20.04', '<')
+
+- name: Ensure additional dependencies are installed (on Ubuntu >= 20.04)
+  ansible.builtin.apt:
+    name: gnupg
+    state: present
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('20.04', '>=')
+
+- name: Add signing key
+  ansible.builtin.apt_key:
+    url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+    state: present
+
+- name: Add repository into sources list
+  ansible.builtin.apt_repository:
+    repo: "deb [arch={{ ansible_architecture }}] \
+    https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
+    state: present
+    filename: docker
+
+- name: Install dependencies
+  ansible.builtin.apt:
+    pkg: containerd.io
+    state: present
+    update_cache: true
 
 - name: Install cni plugins
   ansible.builtin.unarchive:
-    src: https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz
+    src: "{{ cni_link }}"
     dest: /opt/cni/bin/
     creates: /opt/cni/bin/
     remote_src: true
@@ -68,6 +107,7 @@
     dest: /etc/sysctl.d/99-kubernetes-cri.conf
     force: false
     mode: 0644
+  changed_when: false
 
 - name: Add conf for cri
   ansible.builtin.lineinfile:
@@ -100,7 +140,7 @@
     path: /etc/containerd/config.toml
   changed_when: false
 
-- name: Make sure  SystemdCgroup = false is not set
+- name: Make sure SystemdCgroup != false
   ansible.builtin.lineinfile:
     path: /etc/containerd/config.toml
     state: absent

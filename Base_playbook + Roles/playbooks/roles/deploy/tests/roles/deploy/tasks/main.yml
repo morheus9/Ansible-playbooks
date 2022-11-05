@@ -6,7 +6,7 @@
     state: present
     loop:
       - "tree"
-      - "python"
+      - "aazazwawqcqwc"
 #   - name: Check linux versions
 #     debug: var=ansible_os_family
 

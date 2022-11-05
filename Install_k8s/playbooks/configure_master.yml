@@ -1,5 +1,5 @@
 ---
-- name: Setup_master.
+- name: Setup_master
   hosts: masters
   become: true
   roles:
