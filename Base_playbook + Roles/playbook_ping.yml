@@ -5,3 +5,5 @@
   tasks:
     - name: Ping my servers
       ansible.builtin.ping:
+
+# ansible all -m ping

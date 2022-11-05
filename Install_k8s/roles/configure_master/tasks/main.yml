@@ -8,7 +8,7 @@
 - name: Initialize the cluster
   become: true
   become_user: "{{ ansible_user }}"
-  ansible.builtin.shell: |
+  ansible.builtin.command: |
     kubeadm init
     --pod-network-cidr={{ cidr }} \
     --cri-socket /run/containerd/containerd.sock \
