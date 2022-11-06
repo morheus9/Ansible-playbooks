@@ -1,9 +1,9 @@
-[STAGING_SERVERS]
-Linux1 ansible_host=192.168.30.140 ansible_user=root ansble_password=111
-Linux2 ansible_host=192.168.30.141 ansible_user=pi ansible_ssh_private_key_file=/root/.ssh/id_rsa
+[staging_servers]
+Linux1 ansible_host=192.168.30.140
+Linux2 ansible_host=192.168.30.141
 
-[PROD_SERVERS]
+[prod_servers]
 
-[all_grouos:children]
+[all_groups:children]
 STAGING_SERVERS
 PROD_SERVERS
