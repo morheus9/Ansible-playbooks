@@ -5,5 +5,5 @@ Linux2 ansible_host=192.168.30.141
 [prod_servers]
 
 [all_groups:children]
-STAGING_SERVERS
-PROD_SERVERS
+staging_servers
+prod_servers
