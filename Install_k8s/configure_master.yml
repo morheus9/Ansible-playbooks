@@ -3,4 +3,4 @@
   hosts: masters
   become: true
   roles:
-    - { role: configure_master, when: ansible_system == 'Linux' }
+    - role: configure_master

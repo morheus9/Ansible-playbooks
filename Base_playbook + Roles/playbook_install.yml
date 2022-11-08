@@ -4,7 +4,7 @@
   become: true
 
   roles:
-  - { role: deploy, when: ansible_system == 'Linux' }
+  - deploy
 
 #  vars:
 #    source_file: ./MyWebSite/index.html

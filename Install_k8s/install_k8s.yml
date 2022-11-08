@@ -4,4 +4,4 @@
   become: true
   gather_facts: true
   roles:
-    - { role: install_k8s, when: ansible_system == 'Linux' }
+    - role: install_k8s

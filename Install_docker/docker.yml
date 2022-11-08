@@ -4,4 +4,4 @@
   remote_user: pi
   become: true
   roles:
-    - { role: docker, when: ansible_system == 'Linux' }
+    - role: docker
