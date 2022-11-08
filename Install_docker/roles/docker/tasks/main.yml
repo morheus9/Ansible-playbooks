@@ -3,14 +3,10 @@
   ansible.builtin.apt:
     upgrade: true
     update_cache: true
-    cache_valid_time: 86400 # One day
 
 - name: Install dependencies
   ansible.builtin.apt:
-    pkg:
-      - ca-certificates
-      - curl
-      - lsb-release
+    name: "{{ pre_packages }}"
     state: present
 
 - name: Ensure additional dependencies are installed (on Ubuntu < 20.04 and any other systems)
@@ -39,23 +35,18 @@
 
 - name: Install dependencies
   ansible.builtin.apt:
-    pkg:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-      - docker-compose-plugin
+    name: "{{ docker_packages }}"
     state: present
-    update_cache: true
 
 - name: Add adminstrator to docker group
   ansible.builtin.user:
-    name: "{{ admin_user }}"
+    name: "{{ ansible_user }}"
     groups: docker
     append: true
 
 - name: Enable docker and containerd services
   ansible.builtin.user:
-    name: "{{ admin_user }}"
+    name: "{{ ansible_user }}"
     groups: docker
     append: true
 

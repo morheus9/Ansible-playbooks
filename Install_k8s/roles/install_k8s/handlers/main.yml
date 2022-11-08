@@ -1,8 +1,4 @@
 ---
-- name: Apply sysctl params systemctl
-  ansible.builtin.command: sysctl --system
-  changed_when: false
-
 - name: Restart and enable containerd
   ansible.builtin.systemd:
     daemon_reload: true
@@ -13,10 +9,7 @@
 - name: Hold kubelet, kubeadm, kubectl
   ansible.builtin.dpkg_selections:
     selection: hold
-    name:
-      - kubelet
-      - kubeadm
-      - kubectl
+    name: "{{ packages_docker }}"
 
 - name: Enable kubelet
   ansible.builtin.systemd:

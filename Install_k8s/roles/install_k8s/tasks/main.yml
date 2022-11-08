@@ -2,7 +2,6 @@
   ansible.builtin.apt:
     upgrade: true
     update_cache: true
-    cache_valid_time: 86400 # One day
 
 - name: Add nodes to host_file
   ansible.builtin.blockinfile:
@@ -45,10 +44,7 @@
 - name: Install dependencies
   ansible.builtin.apt:
     update_cache: true
-    pkg:
-      - ca-certificates
-      - curl
-      - lsb-release
+    name: "{{ pre_packages }}"
     state: present
 
 - name: Ensure additional dependencies are installed (on Ubuntu < 20.04 and any other systems)
@@ -75,7 +71,7 @@
     state: present
     filename: docker
 
-- name: Install dependencies
+- name: Install containerd
   ansible.builtin.apt:
     pkg: containerd.io
     state: present
@@ -109,15 +105,22 @@
     mode: 0644
   changed_when: false
 
+#  ansible.builtin.lineinfile:
+#    path: /etc/sysctl.d/99-kubernetes-cri.conf
+#    line: "{{ item }}"
+#  with_items:
+#    - "net.bridge.bridge-nf-call-iptables  = 1"
+#    - "net.ipv4.ip_forward                 = 1"
+#   - "net.bridge.bridge-nf-call-ip6tables = 1"
+# notify: Apply sysctl params systemctl
+
 - name: Add conf for cri
-  ansible.builtin.lineinfile:
-    path: /etc/sysctl.d/99-kubernetes-cri.conf
-    line: "{{ item }}"
-  with_items:
-    - "net.bridge.bridge-nf-call-iptables  = 1"
-    - "net.ipv4.ip_forward                 = 1"
-    - "net.bridge.bridge-nf-call-ip6tables = 1"
-  notify: Apply sysctl params systemctl
+  ansible.posix.sysctl:
+    name: "{{ Config_cri }}"
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
 
 - name: Create containerd config file
   ansible.builtin.file:
@@ -150,11 +153,7 @@
 
 - name: Install dependencies
   ansible.builtin.apt:
-    update_cache: true
-    pkg:
-      - curl
-      - wget
-      - apt-transport-https
+    name: "{{ pre_packages_docker }}"
     state: present
 
 - name: Add an Apt signing key for kubelet, kubeadm, kubectl
@@ -171,10 +170,7 @@
 - name: Install kubelet, kubeadm, kubectl
   ansible.builtin.apt:
     update_cache: true
-    name:
-      - kubelet
-      - kubeadm
-      - kubectl
+    name: "{{ packages_docker }}"
     state: present
     notify:
       - Hold kubelet, kubeadm, kubectl
