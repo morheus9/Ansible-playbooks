@@ -1,7 +1,7 @@
-Role Name
+users
 =========
 
-A brief description of the role goes here.
+Create a new user.
 
 Requirements
 ------------
@@ -25,7 +25,7 @@ Including an example of how to use your role (for instance, with variables passe
 
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
+         - role: users
 
 License
 -------
@@ -35,4 +35,5 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+nodegopher@gmail.com
+Nagornov Vyacheslav

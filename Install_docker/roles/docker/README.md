@@ -1,7 +1,7 @@
-Role Name
+Docker
 =========
 
-A brief description of the role goes here.
+Installs Docker from docker repo and added users to docker group.
 
 Requirements
 ------------
@@ -25,7 +25,7 @@ Including an example of how to use your role (for instance, with variables passe
 
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
+         - role: docker
 
 License
 -------
@@ -35,4 +35,5 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+nodegopher@gmail.com
+Nagornov Vyacheslav
