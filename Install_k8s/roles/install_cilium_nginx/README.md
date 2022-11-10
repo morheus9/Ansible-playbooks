@@ -1,7 +1,7 @@
-join_workers
+install_cilium_nginx
 =========
 
-Joins workers to master.
+Installs cilium network and nginx ingress.
 
 Requirements
 ------------
@@ -16,7 +16,7 @@ Including an example of how to use your role (for instance, with variables passe
 
     - hosts: servers
       roles:
-         - role: join_workers
+         - role: install_cilium_nginx
 
 License
 -------

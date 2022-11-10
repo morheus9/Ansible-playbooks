@@ -1,0 +1,17 @@
+---
+- name: Restart and enable containerd
+  ansible.builtin.systemd:
+    daemon_reload: true
+    restarted: true
+    enabled: true
+    name: containerd
+
+- name: Hold kubelet, kubeadm, kubectl
+  ansible.builtin.dpkg_selections:
+    selection: hold
+    name: "{{ packages_docker }}"
+
+- name: Enable kubelet
+  ansible.builtin.systemd:
+    name: kubelet
+    enabled: true
