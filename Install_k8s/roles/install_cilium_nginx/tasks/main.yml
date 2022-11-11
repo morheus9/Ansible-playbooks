@@ -29,29 +29,35 @@
     state: present
     src: ~/monitoring-example.yaml
 
-- name:  Expose grafana 
+- name: Expose grafana
   become: true
   become_user: "{{ ansible_user }}"
-  ansible.builtin.command: /
-  kubectl -n cilium-monitoring port-forward service/grafana --address 0.0.0.0 --address :: 3000:3000
+  ansible.builtin.command: 'kubectl -n cilium-monitoring port-forward service/grafana --address 0.0.0.0 --address :: 3000:3000'
   changed_when: false
 
-echo "........................Cilium_CLI........................"
-CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/master/stable.txt)
-CLI_ARCH=amd64
-if [ "$(uname -m)" = "aarch64" ]; then CLI_ARCH=arm64; fi
-curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
-sha256sum --check cilium-linux-${CLI_ARCH}.tar.gz.sha256sum
-sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin
-rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
+- name: Install Cilium CLI
+  become: true
+  become_user: "{{ ansible_user }}"
+  ansible.builtin.shell: /
+    CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/master/stable.txt) /
+    CLI_ARCH=amd64 /
+    if [ "$(uname -m)" = "aarch64" ]; then CLI_ARCH=arm64; fi /
+    curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum} /
+    sha256sum --check cilium-linux-${CLI_ARCH}.tar.gz.sha256sum /
+    sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin /
+    rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum} /
+    cilium install
+  changed_when: false
 
-cilium install
-
-echo "........................Nginx-ingress........................"
-helm upgrade --install ingress-nginx ingress-nginx \
-    --repo https://kubernetes.github.io/ingress-nginx \
-    --namespace ingress-nginx --create-namespace \
-    --set controller.hostNetwork=true \
-    --set controller.hostPort.enabled=true \
-    --set controller.kind=DaemonSet \
-    --set controller.service.type=ClusterIP
+- name: Install Nginx ingress
+  kubernetes.core.helm_repository:
+    name: ingress-nginx
+    repo_url: "https://kubernetes.github.io/ingress-nginx"
+    chart_ref: ingress-nginx
+    release_namespace: ingress-nginx
+    create_namespace: true
+    values:
+      controller.hostNetwor: true
+      controller.hostPort.enabled: true
+      controller.kind: DaemonSet
+      controller.service.type: ClusterIP
