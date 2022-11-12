@@ -1,6 +1,0 @@
----
-- name: Setup_master
-  hosts: masters
-  become: true
-  roles:
-    - role: configure_master

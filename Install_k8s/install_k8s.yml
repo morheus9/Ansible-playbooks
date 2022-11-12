@@ -1,7 +1,0 @@
----
-- name: Install_k8s
-  hosts: workers, masters
-  become: true
-  gather_facts: true
-  roles:
-    - role: install_k8s
