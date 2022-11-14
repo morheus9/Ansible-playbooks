@@ -1,5 +1,5 @@
 [masters]
-master ansible_host=192.168.1.110
+master ansible_host=192.168.1.110 ansible_become_pass=111
 
 [workers]
-worker1 ansible_host=192.168.1.111
+worker1 ansible_host=192.168.1.111 ansible_become_pass=222222

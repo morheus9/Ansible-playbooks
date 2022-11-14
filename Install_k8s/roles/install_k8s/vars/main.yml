@@ -5,10 +5,10 @@ pre_packages:
   - curl
   - lsb-release
 
-config_cri:
-  - net.bridge.bridge-nf-call-iptables
-  - net.ipv4.ip_forward
-  - net.bridge.bridge-nf-call-ip6tables
+#config_cri:
+#  - net.bridge.bridge-nf-call-iptables
+#  - net.ipv4.ip_forward
+#  - net.bridge.bridge-nf-call-ip6tables
 
 pre_packages_docker:
   - curl
