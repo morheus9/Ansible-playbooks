@@ -23,9 +23,9 @@ cni_link: https://github.com/containernetworking/plugins/releases/download/v1.1.
 Example Playbook
 ----------------
 ```
-    - hosts: servers
-      roles:
-         - role: install_k8s
+- hosts: servers
+  roles:
+     - role: install_k8s
 ```
 Author Information
 ------------------
