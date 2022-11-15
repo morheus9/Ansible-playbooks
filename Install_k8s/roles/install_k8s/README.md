@@ -6,7 +6,7 @@ Installs k8s.
 Requirements
 ------------
 
-Nothing! Just start this role!
+You have to rename your nodes, then check defaults and just start this role!
 
 Role Variables
 --------------
