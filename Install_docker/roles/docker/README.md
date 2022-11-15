@@ -11,13 +11,13 @@ Nothing! Just start this role!
 
 Example Playbook
 ----------------
-
+```
 - name: Install docker
   hosts: staging_servers
   become: true
   roles:
     - role: docker
-
+```
 Author Information
 ------------------
 
