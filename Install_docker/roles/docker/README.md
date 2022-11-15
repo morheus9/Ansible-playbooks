@@ -6,22 +6,17 @@ Installs Docker from docker repo and added users to docker group.
 Requirements
 ------------
 
-Role Variables
---------------
+Nothing! Just start this role!
+
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - role: docker
-
-License
--------
-
-BSD
+- name: Install docker
+  hosts: staging_servers
+  become: true
+  roles:
+    - role: docker
 
 Author Information
 ------------------

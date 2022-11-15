@@ -6,22 +6,22 @@ Configures master for k8s: kubeadm init and compies join command.
 Requirements
 ------------
 
+Nothing! Just start this role!
+
 Role Variables
 --------------
 
+```
+Defaults:
+cidr: 10.244.0.0/16
+# for calico: cidr: 192.168.0.0/16
+```
 Example Playbook
 ----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
     - hosts: servers
       roles:
          - role: configure_master
-
-License
--------
-
-BSD
 
 Author Information
 ------------------
