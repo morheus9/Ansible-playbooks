@@ -18,11 +18,11 @@ cidr: 10.244.0.0/16
 ```
 Example Playbook
 ----------------
-
+```
     - hosts: servers
       roles:
          - role: configure_master
-
+```
 Author Information
 ------------------
 
