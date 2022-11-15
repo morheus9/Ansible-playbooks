@@ -16,11 +16,11 @@ Role Variables
 ```
 Example Playbook
 ----------------
-
-    - hosts: servers
-      roles:
-         - role: install_cilium_nginx
-
+```
+- hosts: servers
+  roles:
+     - role: install_cilium_nginx
+```
 Author Information
 ------------------
 
