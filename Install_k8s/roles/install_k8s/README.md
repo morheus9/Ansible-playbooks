@@ -11,9 +11,8 @@ Nothing! Just start this role!
 Role Variables
 --------------
 
-```
 Defaults:
-
+```
 nodes:
   - 192.168.1.110 k8smaster.example.net k8smaster
   - 192.168.1.111 k8sworker1.example.net k8sworker1
