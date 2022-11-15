@@ -11,8 +11,8 @@ Nothing! Just start this role!
 Role Variables
 --------------
 
-```
 Defaults:
+```
 cidr: 10.244.0.0/16
 # for calico: cidr: 192.168.0.0/16
 ```
