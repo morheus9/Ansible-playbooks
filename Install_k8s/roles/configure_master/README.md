@@ -20,7 +20,7 @@ init_command: |
     --upload-certs \
     --control-plane-endpoint=k8smaster.example.net \
     --skip-phases=addon/kube-proxy
-# for calico: cidr: 192.168.0.0/16
+# for calico: cidr=192.168.0.0/16
 
 helm_version: 'v3.10.2'
 helm_platform: linux
