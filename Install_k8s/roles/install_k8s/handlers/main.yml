@@ -1,4 +1,9 @@
 ---
+- name: Restart systemd
+  ansible.builtin.systemd:
+    state: restarted
+    become: true
+
 - name: Restart and enable containerd
   ansible.builtin.systemd:
     daemon_reload: true
@@ -6,7 +11,11 @@
     enabled: true
     name: containerd
 
-- name: Restart systemd
-  ansible.builtin.systemd:
-    state: restarted
-    become: true
+- name: Hold kubelet, kubeadm, kubectl
+  ansible.builtin.dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  loop:
+    - kubelet
+    - kubeadm
+    - kubectl

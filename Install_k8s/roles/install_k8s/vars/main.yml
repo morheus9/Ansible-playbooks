@@ -5,7 +5,7 @@ pre_packages:
   - curl
   - lsb-release
 
-#config_cri:
+# config_cri:
 #  - net.bridge.bridge-nf-call-iptables
 #  - net.ipv4.ip_forward
 #  - net.bridge.bridge-nf-call-ip6tables

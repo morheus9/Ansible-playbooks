@@ -1,7 +1,10 @@
+---
 - name: Reset Kubernetes component
   become: true
   ansible.builtin.shell:
     cmd: yes | kubeadm reset
+  register: my_output
+  changed_when: my_output.rc != 0
 
 - name: Copy join command to worker nodes.
   become: true
@@ -16,6 +19,7 @@
   become: true
   ansible.builtin.command: sh /tmp/kubernetes_join_command
   register: joined_or_not
+  changed_when: my_output.rc != 0
 
 - name: Join the Worker nodes with the master
   ansible.builtin.debug:

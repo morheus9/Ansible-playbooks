@@ -1,3 +1,4 @@
+---
 - name: Update and upgrade apt packages
   ansible.builtin.apt:
     upgrade: true
@@ -89,7 +90,7 @@
       overlay
       br_netfilter
     create: true
-    mode: 0644 
+    mode: 0644
 
 - name: Modprobe
   ansible.builtin.shell: |
@@ -167,15 +168,7 @@
     update_cache: true
     name: "{{ packages_docker }}"
     state: present
-
-- name: Hold kubelet, kubeadm, kubectl
-  ansible.builtin.dpkg_selections:
-    name: "{{ item }}"
-    selection: hold
-  loop:
-    - kubelet
-    - kubeadm
-    - kubectl
+  notify: Hold kubelet, kubeadm, kubectl
 
 - name: Enable kubelet
   ansible.builtin.systemd:
