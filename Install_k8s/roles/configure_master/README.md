@@ -6,7 +6,7 @@ Configures master for k8s: kubeadm init and compies join command and instal helm
 Requirements
 ------------
 
-Nothing! Just start this role!
+Nothing! Just check defaults and start this role!
 
 Role Variables
 --------------
