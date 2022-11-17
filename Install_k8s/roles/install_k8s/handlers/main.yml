@@ -1,7 +1,7 @@
 ---
 - name: Restart systemd
   ansible.builtin.systemd:
-    state: restarted
+    restarted: true
     become: true
 
 - name: Restart and enable containerd

@@ -6,7 +6,7 @@
   register: my_output
   changed_when: my_output.rc != 0
 
-- name: Copy join command to worker nodes.
+- name: Copy join command to worker nodes
   become: true
   become_method: sudo
   become_user: root

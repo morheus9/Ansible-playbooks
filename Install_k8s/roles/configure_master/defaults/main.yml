@@ -1,11 +1,8 @@
 ---
-init_command: |
-  kubeadm init
-    --pod-network-cidr=10.244.0.0/16 \
-    --cri-socket /run/containerd/containerd.sock \
-    --upload-certs \
-    --control-plane-endpoint=k8smaster.example.net \
-    --skip-phases=addon/kube-proxy
+pod_network_cidr: 10.244.0.0/16
+cri_socket: /run/containerd/containerd.sock
+control_plane_endpoint: k8smaster.example.net
+skip_phases: addon/kube-proxy
 # for calico: cidr: 192.168.0.0/16
 
 helm_version: 'v3.10.2'
