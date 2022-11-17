@@ -21,30 +21,6 @@
     regexp: swap
     state: absent
 
-# - name: Install containerd
-#  ansible.builtin.unarchive:
-#    src: https://github.com/containerd/containerd/releases/download/v1.6.9/containerd-1.6.9-linux-amd64.tar.gz
-#    dest: /usr/local/
-#    remote_src: true
-
-# - name: Install containerd.service
-#  ansible.builtin.get_url:
-#    url: https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
-#    dest: /etc/systemd/system
-#    mode: 0644
-
-# - name: Download Runc
-#  ansible.builtin.get_url:
-#    url: https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64
-#    dest: /tmp/
-#    mode: 0644
-
-# - name: Install Runc
-#  ansible.builtin.command: install -m 755 runc.amd64 /usr/local/sbin/runc
-#  args:
-#    chdir: /tmp/
-#  changed_when: false
-
 - name: Install dependencies
   become: true
   ansible.builtin.apt:
@@ -118,14 +94,6 @@
     force: false
     mode: 0644
   changed_when: false
-
-# - name: Add conf for cri
-#  ansible.posix.sysctl:
-#    name: "{{ config_cri }}"
-#    value: '1'
-#    sysctl_set: true
-#    state: present
-#    reload: true
 
 - name: Add conf for cri
   become: true

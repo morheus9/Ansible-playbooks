@@ -1,13 +1,12 @@
 ---
 - name: Restart systemd
+  become: true
   ansible.builtin.systemd:
-    restarted: true
-    become: true
+    daemon_reload: true
 
 - name: Restart and enable containerd
   ansible.builtin.systemd:
-    daemon_reload: true
-    restarted: true
+    state: restarted
     enabled: true
     name: containerd
 

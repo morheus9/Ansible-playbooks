@@ -4,7 +4,6 @@ cri_socket: /run/containerd/containerd.sock
 control_plane_endpoint: k8smaster.example.net
 skip_phases: addon/kube-proxy
 # for calico: cidr: 192.168.0.0/16
-
 helm_version: 'v3.10.2'
 helm_platform: linux
 helm_arch: amd64
