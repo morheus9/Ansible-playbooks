@@ -18,7 +18,7 @@ The first thing to check is whether the SSH connection re–use works. Since Ans
 ssh_args = -o ControlMaster=auto -o ControlPersist=60s
 ```
 Check: 
-```ansible test -vvvv -m ping``` 
+<br>```ansible test -vvvv -m ping``` 
 <br>You should see: 
 <br>```SSH: EXEC ssh -vvv -C -o ControlMaster=auto -o ControlPersist=60s... -o ControlPath=/home/ubuntu/.ansible/cp/7c223265ce```
 
