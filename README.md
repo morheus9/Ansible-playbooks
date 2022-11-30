@@ -9,6 +9,7 @@
 host_key_checking = False
 ```
 
+
 - SSH multiplexing:
 
 The first thing to check is whether the SSH connection re–use works. Since Ansible performs all actions via SSH, any delay in establishing a connection significantly slows down the execution of the playbook as a whole.
@@ -18,9 +19,13 @@ The first thing to check is whether the SSH connection re–use works. Since Ans
 ssh_args = -o ControlMaster=auto -o ControlPersist=60s
 ```
 Check: 
-<br>```ansible test -vvvv -m ping``` 
-<br>You should see: 
-<br>```SSH: EXEC ssh -vvv -C -o ControlMaster=auto -o ControlPersist=60s... -o ControlPath=/home/ubuntu/.ansible/cp/7c223265ce```
+```
+ansible test -vvvv -m ping
+``` 
+You should see: 
+```
+SSH: EXEC ssh -vvv -C -o ControlMaster=auto -o ControlPersist=60s... -o ControlPath=/home/ubuntu/.ansible/cp/7c223265ce
+```
 
 
 - Enable Pipeling:
@@ -29,12 +34,16 @@ Check:
 pipelining = true
 ```
 Check: 
-<br>```ansible test -vvv -m ping``` 
+```
+ansible test -vvv -m ping
+``` 
 <br>You should see ONE ssh call. Not a few.
 
 
 - Turn off gather_facts:
-<br>```gather_facts: no```
+```
+gather_facts: no
+```
 
 
 - Place the ansible master in the environment closest to the target hosts. For example in the same AWS region.
