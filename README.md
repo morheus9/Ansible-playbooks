@@ -18,7 +18,14 @@ In the ansible.cfg add:
 [ssh_connection]
 ssh_args = -o ControlMaster=auto -o ControlPersist=60s
 ```
-Check: ```ansible test -vvvv -m ping``` You should see: ```SSH: EXEC ssh -vvv -C -o ControlMaster=auto -o ControlPersist=60s ... -o ControlPath=/home/ubuntu/.ansible/cp/7c223265ce```
+Check: 
+```
+ansible test -vvvv -m ping
+``` 
+You should see: 
+```
+SSH: EXEC ssh -vvv -C -o ControlMaster=auto -o ControlPersist=60s... -o ControlPath=/home/ubuntu/.ansible/cp/7c223265ce
+```
 
 
 - Enable Pipeling:
