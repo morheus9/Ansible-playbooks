@@ -34,7 +34,7 @@ Check:
 You should see ONE ssh call. Not a few.
 
 
-- Turn of gather_facts:
+- Turn off gather_facts:
 ```gather_facts: no```
 
 
