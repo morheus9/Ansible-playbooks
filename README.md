@@ -33,7 +33,9 @@ Check:
 ```ansible test -vvv -m ping``` 
 You should see ONE ssh call. Not a few.
 
+
 - Turn of gather_facts:
 ```gather_facts: no```
+
 
 - Place the ansible master in the environment closest to the target hosts. For example in the same AWS region.
