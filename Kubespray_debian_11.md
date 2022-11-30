@@ -144,10 +144,6 @@ nameserver 8.8.8.8
 nameserver 8.8.4.4
 ```
 
-## Step 5: Install ingress Nginx:
 
-
-
-## Step 6: Install Kubernetes Dashboard:
 
 
