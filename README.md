@@ -29,7 +29,7 @@ Check:
 ```
 ansible test -vvv -m ping
 ``` 
-<br>You should see ONE ssh call. Not a few.
+You should see ONE ssh call. Not a few.
 ### 4. Turn off gather_facts:
 ```
 gather_facts: no
