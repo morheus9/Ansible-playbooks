@@ -13,6 +13,7 @@ host_key_checking = False
 - SSH multiplexing:
 
 The first thing to check is whether the SSH connection re–use works. Since Ansible performs all actions via SSH, any delay in establishing a connection significantly slows down the execution of the playbook as a whole.
+
 In the ansible.cfg add:
 ```
 [ssh_connection]
