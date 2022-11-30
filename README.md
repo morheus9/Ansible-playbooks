@@ -3,7 +3,7 @@
 ## Can you speed up your roles with:
 
 
-- Turn of host_key_checking for stable and secure environment:
+1. Turn of host_key_checking for stable and secure environment:
 ```
 [defaults]
 host_key_checking = False
