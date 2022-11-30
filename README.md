@@ -3,14 +3,14 @@
 ## Can you speed up your roles with:
 
 
-#### 1. Turn of host_key_checking for stable and secure environment:
+### 1. Turn of host_key_checking for stable and secure environment:
 ```
 [defaults]
 host_key_checking = False
 ```
 
 
-- SSH multiplexing:
+### 2. SSH multiplexing:
 
 The first thing to check is whether the SSH connection re–use works. Since Ansible performs all actions via SSH, any delay in establishing a connection significantly slows down the execution of the playbook as a whole.
 <br>In the ansible.cfg add:
@@ -28,7 +28,7 @@ SSH: EXEC ssh -vvv -C -o ControlMaster=auto -o ControlPersist=60s... -o ControlP
 ```
 
 
-- Enable Pipeling:
+### 3. Enable Pipeling:
 ```
 [ssh_connection]
 pipelining = true
@@ -40,7 +40,7 @@ ansible test -vvv -m ping
 <br>You should see ONE ssh call. Not a few.
 
 
-- Turn off gather_facts:
+### 4. Turn off gather_facts:
 ```
 gather_facts: no
 ```
