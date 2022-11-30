@@ -1,6 +1,4 @@
-# Ansible
-
-## Can you speed up your roles with:
+# You can speed up your roles with:
 
 ### 1. Turn of host_key_checking for stable and secure environment:
 ```
