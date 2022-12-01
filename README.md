@@ -14,7 +14,7 @@ ssh_args = -o ControlMaster=auto -o ControlPersist=60s
 ```
 Check: 
 ```
-ansible test -vvvv -m ping
+ansible staging_servers -vvvv -m ping
 ``` 
 You should see: 
 ```
@@ -27,7 +27,7 @@ pipelining = true
 ```
 Check: 
 ```
-ansible test -vvv -m ping
+ansible staging_servers -vvv -m ping
 ``` 
 You should see ONE ssh call. Not a few.
 ### 4. Turn off gather_facts:

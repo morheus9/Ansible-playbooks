@@ -7,4 +7,4 @@
   roles:
     - role: docker
 
-# ansible-playbook docker.yml -K
+# ansible-playbook docker.yml
