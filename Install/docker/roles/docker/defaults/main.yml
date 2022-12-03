@@ -1,0 +1,3 @@
+---
+add_prune_job: false # every month
+delete_prune_job: false

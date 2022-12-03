@@ -5,12 +5,10 @@ Configures master for k8s: kubeadm init and compies join command and instal helm
 
 Requirements
 ------------
-
 You have to check defaults and just start this role!
 
 Role Variables
 --------------
-
 Defaults:
 ```
 pod_network_cidr: 10.244.0.0/16

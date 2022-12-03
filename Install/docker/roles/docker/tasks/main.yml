@@ -60,3 +60,20 @@
     name: containerd.service
     daemon_reload: true
     enabled: true
+
+- name: Add_prune_job # every month
+  ansible.builtin.cron:
+    user: "{{ ansible_user }}"
+    name: "Docker prune"
+    minute: "0"
+    hour: "0"
+    month: "1"
+    job: "docker system prune -f"
+  when: add_prune_job
+
+- name: Delete_prune_job
+  ansible.builtin.cron:
+    user: "{{ ansible_user }}"
+    name: "Docker prune"
+    state: absent
+  when: delete_prune_job
