@@ -1,0 +1,9 @@
+[staging_servers]
+linux1.fdfd.com ansible_ssh_host=192.168.30.140
+linux2 ansible_host=192.168.30.141
+
+[prod_servers]
+
+[all_groups:children]
+staging_servers
+prod_servers
