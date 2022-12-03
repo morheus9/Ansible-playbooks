@@ -61,19 +61,18 @@
     daemon_reload: true
     enabled: true
 
-- name: Add_prune_job # every month
+- name: Add_prune_job # every day
   ansible.builtin.cron:
     user: "{{ ansible_user }}"
     name: "Docker prune"
     minute: "0"
     hour: "0"
-    month: "1"
     job: "docker system prune -f"
-  when: add_prune_job
+  when: add_prune_job_to_cron
 
 - name: Delete_prune_job
   ansible.builtin.cron:
     user: "{{ ansible_user }}"
     name: "Docker prune"
     state: absent
-  when: delete_prune_job
+  when: delete_prune_job_from_cron
