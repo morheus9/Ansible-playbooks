@@ -1,0 +1,23 @@
+---
+- name: Install_python
+  hosts: docker
+  gather_facts: false
+  become: true
+  tasks:
+  - name: Install_python
+    ansible.builtin.apt:
+      update_cache: true
+      name: python3-pip
+      state: present
+
+- name: Install docker
+  gather_facts: true
+  hosts: docker
+  remote_user: pi
+  become: true
+  roles:
+    - role: docker
+
+# ansible all -m ping
+# ansible-galaxy install -f -r docker_requierements.yml
+# ansible-playbook docker.yml

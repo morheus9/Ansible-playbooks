@@ -1,6 +1,0 @@
-[prod_servers]
-
-
-[all_groups:children]
-staging_servers
-prod_servers

@@ -1,9 +1,16 @@
-[staging_servers]
-linux1.fdfd.com ansible_ssh_host=192.168.30.140
-linux2 ansible_host=192.168.30.141
+[docker]
+master ansible_host=192.168.1.110 ansible_become_pass=111 
+worker1 ansible_host=192.168.1.111 ansible_become_pass=111
 
 [prod_servers]
 
-[all_groups:children]
-staging_servers
-prod_servers
+
+[k8s_masters]
+master ansible_host=192.168.1.110 ansible_become_pass=111
+[k8s_workers]
+worker1 ansible_host=192.168.1.111 ansible_become_pass=111
+
+
+[k8s:children]
+k8s_masters
+k8s_workers

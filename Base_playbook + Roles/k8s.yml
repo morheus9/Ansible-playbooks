@@ -1,0 +1,31 @@
+---
+- name: Install_python
+  hosts: k8s_workers, k8s_masters
+  gather_facts: false
+  become: true
+  tasks:
+  - name: Install_python
+    ansible.builtin.apt:
+      update_cache: true
+      name: python3-pip
+      state: present
+
+- name: Install_k8s
+  hosts: k8s_workers, k8s_masters
+  gather_facts: true
+  roles:
+    - role: install_k8s
+
+- name: Setup_master
+  hosts: k8s_masters
+  roles:
+    - role: configure_master
+
+- name: Join_workers
+  hosts: k8s_workers
+  roles:
+    - role: join_workers
+
+# ansible all -m ping
+# ansible-galaxy install -f -r k8s_requierements.yml
+# ansible-playbook k8s.yml
