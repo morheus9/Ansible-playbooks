@@ -1,4 +1,4 @@
 ---
 - src: git+ssh://git@github.com:morheus9/Install/docker/Ansible.git
-  version: origin/master #better v1.0
+  version: master #better v1.0
   name: docker
