@@ -1,6 +1,0 @@
----
-- name: Test deploy
-  hosts: test_host
-  remote_user: root
-  roles:
-    - deploy

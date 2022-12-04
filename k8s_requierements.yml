@@ -1,6 +1,6 @@
 ---
 - src: https://github.com/morheus9/Role_install_k8s.git
-  version: v1.1
+  version: v1.2
   name: install_k8s
 
 - src: https://github.com/morheus9/Role_configure_master.git
