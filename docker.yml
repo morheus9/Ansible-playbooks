@@ -1,14 +1,12 @@
 ---
-- name: Install_python
+- name: Prepare
   hosts: docker
   gather_facts: false
   become: true
   tasks:
-  - name: Install_python
-    ansible.builtin.apt:
-      update_cache: true
-      name: python3-pip
-      state: present
+  - name: Install_python_for_ansible
+    ansible.builtin.raw: test -e /usr/bin/python || apt -y update && apt install -y python3
+    changed_when: false
 
 - name: Install docker
   gather_facts: true

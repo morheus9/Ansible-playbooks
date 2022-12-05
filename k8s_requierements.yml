@@ -1,12 +1,12 @@
 ---
-- src: https://github.com/morheus9/Role_install_k8s.git
+- src: https://github.com/morheus9/role_install_k8s.git
   version: v1.2
   name: install_k8s
 
-- src: https://github.com/morheus9/Role_configure_master.git
+- src: https://github.com/morheus9/role_configure_master.git
   version: v1.0
   name: configure_master
 
-- src: https://github.com/morheus9/Role_join_workers.git
+- src: https://github.com/morheus9/role_join_workers.git
   version: v1.0
   name: join_workers
