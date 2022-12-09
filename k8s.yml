@@ -26,4 +26,4 @@
 
 # ansible all -m ping
 # ansible-galaxy install -f -r k8s_requierements.yml
-# ansible-playbook k8s.yml
+# ansible-playbook docker.yml --ask-vault-pass

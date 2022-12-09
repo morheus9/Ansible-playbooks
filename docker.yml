@@ -18,4 +18,4 @@
 
 # ansible all -m ping
 # ansible-galaxy install -f -r docker_requierements.yml
-# ansible-playbook docker.yml
+# ansible-playbook docker.yml --ask-vault-pass

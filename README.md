@@ -35,3 +35,5 @@ You should see ONE ssh call. Not a few.
 gather_facts: no
 ```
 ### 5. Place the ansible master in the environment closest to the target hosts. For example in the same AWS region.
+
+### 6. Use Mitogen for ansible.
