@@ -12,17 +12,17 @@
   hosts: k8s_workers, k8s_masters
   gather_facts: true
   roles:
-    - role: install_k8s
+    - install_k8s
 
 - name: Setup_master
   hosts: k8s_masters
   roles:
-    - role: configure_master
+    - configure_master
 
 - name: Join_workers
   hosts: k8s_workers
   roles:
-    - role: join_workers
+    - join_workers
 
 # ansible all -m ping
 # ansible-galaxy install -f -r k8s_requierements.yml

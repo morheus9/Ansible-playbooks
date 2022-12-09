@@ -14,7 +14,7 @@
   remote_user: pi
   become: true
   roles:
-    - role: docker
+    - docker
 
 # ansible all -m ping
 # ansible-galaxy install -f -r docker_requierements.yml
