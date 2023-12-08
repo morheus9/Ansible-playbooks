@@ -8,7 +8,7 @@ ansible all -m ping
 ansible-galaxy install -f -r docker_requierements.yml
 ansible-playbook docker.yml --ask-vault-pass
 ```
-## or k8s.yml - install k8s on servers
+## k8s.yml - install k8s on servers
 ```
 ansible all -m ping
 ansible-galaxy install -f -r k8s_requierements.yml
