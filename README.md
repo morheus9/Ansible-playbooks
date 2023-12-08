@@ -1,5 +1,5 @@
 # 1. Change 
-- group vars and inventory (production and staging)
+- group vars, host vars and inventory (production and staging)
 - ansible.cfg
 # 2. Then use:
 ## docker.yml - install docker on servers
