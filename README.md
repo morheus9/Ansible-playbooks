@@ -1,5 +1,21 @@
-## You can speed up your roles with:
+# 1. Change 
+- group vars and inventory (production and staging)
+- ansible.cfg
+# 2. Then use:
+## docker.yml - install docker on servers
+```
+ansible all -m ping
+ansible-galaxy install -f -r docker_requierements.yml
+ansible-playbook docker.yml --ask-vault-pass
+```
+## or k8s.yml - install k8s on servers
+```
+ansible all -m ping
+ansible-galaxy install -f -r k8s_requierements.yml
+ansible-playbook k8s.yml --ask-vault-pass
+```
 
+## You can speed up your roles with:
 ### 1. Turn of host_key_checking for stable and secure environment:
 ```
 [defaults]
