@@ -24,6 +24,6 @@
   roles:
     - join_workers
 
-# ansible all -m ping
+# ansible all -m ping --ask-vault-pass
 # ansible-galaxy install -f -r k8s_requierements.yml
-# ansible-playbook docker.yml --ask-vault-pass
+# ansible-playbook k8s.yml --ask-vault-pass

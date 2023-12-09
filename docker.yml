@@ -16,6 +16,6 @@
   roles:
     - docker
 
-# ansible all -m ping
+# ansible all -m ping --ask-vault-pass
 # ansible-galaxy install -f -r docker_requierements.yml
 # ansible-playbook docker.yml --ask-vault-pass

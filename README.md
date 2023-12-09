@@ -1,16 +1,17 @@
 # 1. Change:
-- group vars, host vars and inventory (production and staging)
+- group vars and host vars
+- inventory (production and staging)
 - ansible.cfg
 # 2. Then use:
 ## install docker on servers: docker.yml
 ```
-ansible all -m ping
+ansible all -m ping --ask-vault-pass
 ansible-galaxy install -f -r docker_requierements.yml
 ansible-playbook docker.yml --ask-vault-pass
 ```
 ## install k8s on servers: k8s.yml
 ```
-ansible all -m ping
+ansible all -m ping --ask-vault-pass
 ansible-galaxy install -f -r k8s_requierements.yml
 ansible-playbook k8s.yml --ask-vault-pass
 ```
