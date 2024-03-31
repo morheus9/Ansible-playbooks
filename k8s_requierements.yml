@@ -1,24 +1,12 @@
 ---
-- src: https://gitlab.com/morheus9/role_install_k8s/-/archive/main/role_install_k8s-main.tar
+- src: https://github.com/morheus9/role_install_k8s.git
   version: v1.2
   name: install_k8s
 
-- src: https://gitlab.com/morheus9/role_configure_master/-/archive/main/role_configure_master-main.tar
+- src: https://github.com/morheus9/role_configure_master.git
   version: v1.0
   name: configure_master
 
-- src: https://gitlab.com/morheus9/role_join_workers/-/archive/main/role_join_workers-main.tar
+- src: https://github.com/morheus9/role_join_workers.git
   version: v1.0
   name: join_workers
-
-# for github roles
-
-# - src: https://github.com/morheus9/role_install_k8s.git
-#   version: v1.2
-#   name: install_k8s
-# - src: https://github.com/morheus9/role_configure_master.git
-#   version: v1.0
-#   name: configure_master
-# - src: https://github.com/morheus9/role_join_workers.git
-#   version: v1.0
-#   name: join_workers
