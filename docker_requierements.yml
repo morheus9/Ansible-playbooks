@@ -2,3 +2,9 @@
 - src: https://github.com/morheus9/role_docker.git
   version: v1.0
   name: docker
+
+# for gitlab roles
+
+# - src: https://gitlab.com/morheus9/role_docker/-/archive/main/role_docker-main.tar
+#   version: v1.0
+#   name: docker
